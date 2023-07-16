@@ -20,92 +20,91 @@ const routes = (app) => {
   const router = express.Router();
 
   router.post('/upload', upload.single('csv'), async (req, res) => {
-    if (!req.file) {
-      // No file was uploaded
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-  
-    const errors = []; // Store validation errors
-  
-    // Check if the uploaded file is a CSV
-    if (req.file.mimetype !== 'text/csv') {
-      errors.push('Invalid file format. Please upload a CSV file.');
-    }
-  
-    // Validate the CSV file contents
-    const results = [];
-  
-    let hasEntries = false; // Flag to check if the CSV has any entries
-  
-    try {
-      const stream = fs.createReadStream(req.file.path)
-        .pipe(csv())
-        .on('data', async (data) => {
-          hasEntries = true; // Set the flag to true
-  
-          // Process each row of the CSV file
-          const modelNumber = String(data['Model Number']);
-          const unitPrice = parseFloat(data['Unit Price']);
-          const quantity = parseInt(data['Quantity']);
-  
-          // Perform validation checks for each field
-          if (!modelNumber || !modelNumber.trim()) {
-            errors.push('Missing or invalid Model Number in CSV.');
-          }
-          if (isNaN(unitPrice) || unitPrice <= 0) {
-            errors.push('Missing or invalid Unit Price in CSV.');
-          }
-          if (isNaN(quantity) || quantity <= 0) {
-            errors.push('Missing or invalid Quantity in CSV.');
-          }
-  
-          if (errors.length === 0) {
-            // Create a new Order instance
-            const order = new Order({
-              date: req.body.date,
-              vendor: req.body.vendor,
-              modelNumber,
-              unitPrice,
-              quantity
-            });
-  
-            try {
-              // Save the order to the database
-              const savedOrder = await order.save();
-              results.push(savedOrder);
-            } catch (error) {
-              // Handle database save error
-              console.error('Error saving order to the database:', error);
-              errors.push('Error saving order to the database.');
+      if (!req.file) {
+        // No file was uploaded
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+    
+      const errors = []; // Store validation errors
+    
+      // Check if the uploaded file is a CSV
+      if (req.file.mimetype !== 'text/csv') {
+        errors.push('Invalid file format. Please upload a CSV file.');
+      }
+    
+      // Validate the CSV file contents
+      const results = [];
+    
+      let hasEntries = false; // Flag to check if the CSV has any entries
+    
+      try {
+        const stream = fs.createReadStream(req.file.path)
+          .pipe(csv())
+          .on('data', (data) => {
+            hasEntries = true; // Set the flag to true
+    
+            // Process each row of the CSV file
+            const modelNumber = String(data['Model Number']);
+            const unitPrice = parseFloat(data['Unit Price']);
+            const quantity = parseInt(data['Quantity']);
+    
+            // Perform validation checks for each field
+            if (!modelNumber || !modelNumber.trim()) {
+              errors.push('Missing or invalid Model Number in CSV.');
             }
-          }
-        })
-        .on('end', async () => {
-          // Remove the temporary uploaded file
-          fs.unlinkSync(req.file.path);
-  
-          if (!hasEntries) {
-            // CSV has no entries
-            errors.push('CSV file has no entries.');
-          }
-  
-          if (errors.length > 0) {
-            // Return validation errors to the frontend
-            return res.status(400).json({ errors });
-          }
-  
-          // Return a response indicating successful upload and processed data
-          return res.status(200).json({ message: 'File uploaded successfully', data: results });
-        })
-        .on('error', (error) => {
-          console.error('Error processing CSV:', error);
-          return res.status(500).json({ error: 'Internal Server Error' });
-        });
-    } catch (error) {
-      console.error('Error processing CSV:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
+            if (isNaN(unitPrice) || unitPrice <= 0) {
+              errors.push('Missing or invalid Unit Price in CSV.');
+            }
+            if (isNaN(quantity) || quantity <= 0) {
+              errors.push('Missing or invalid Quantity in CSV.');
+            }
+    
+            if (errors.length === 0) {
+              // Create a new Order instance
+              const order = new Order({
+                date: req.body.date,
+                vendor: req.body.vendor,
+                modelNumber,
+                unitPrice,
+                quantity
+              });
+    
+              results.push(order);
+            }
+          })
+          .on('end', async () => {
+            // Remove the temporary uploaded file
+            fs.unlinkSync(req.file.path);
+    
+            if (!hasEntries) {
+              // CSV has no entries
+              errors.push('CSV file has no entries.');
+            }
+    
+            if (errors.length > 0) {
+              // Return validation errors to the frontend
+              return res.status(400).json({ errors });
+            }
+    
+            try {
+              // Save all the validated orders to the database
+              const savedOrders = await Order.insertMany(results);
+              return res.status(200).json({ message: 'File uploaded successfully', data: savedOrders });
+            } catch (error) {
+              console.error('Error saving orders to the database:', error);
+              return res.status(500).json({ error: 'Error saving orders to the database.' });
+            }
+          })
+          .on('error', (error) => {
+            console.error('Error processing CSV:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          });
+      } catch (error) {
+        console.error('Error processing CSV:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+    
   
   //Route to get all orders
   router.get("/orders", async (req, res) => {

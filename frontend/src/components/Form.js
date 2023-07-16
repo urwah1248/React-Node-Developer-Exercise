@@ -54,12 +54,14 @@ const Form = () => {
         body: formData,
       });
 
+      const resJson = await response.json()
+
       if (response.ok) {
         console.log('File uploaded successfully');
         alert('File Uploaded successfully and updated the database.');
         setErrorMessage("")
       } else if (response.status === 400) {
-        setErrorMessage('Uploaded CSV file is not in the proper format.');
+        setErrorMessage(resJson.errors[0]);
       } else {
         console.error('File upload failed');
         setErrorMessage('CSV file could not be uploaded.');

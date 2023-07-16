@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 const routes = (app) => {
   const router = express.Router();
 
-  app.post('/api/upload', upload.single('csv'), async (req, res) => {
+  router.post('/upload', upload.single('csv'), async (req, res) => {
     if (!req.file) {
       // No file was uploaded
       return res.status(400).json({ error: 'No file uploaded' });
@@ -50,13 +50,13 @@ const routes = (app) => {
   
           // Perform validation checks for each field
           if (!modelNumber || !modelNumber.trim()) {
-            errors.push('Missing or empty Model Number.');
+            errors.push('Missing or invalid Model Number in CSV.');
           }
           if (isNaN(unitPrice) || unitPrice <= 0) {
-            errors.push('Invalid Unit Price.');
+            errors.push('Missing or invalid Unit Price in CSV.');
           }
           if (isNaN(quantity) || quantity <= 0) {
-            errors.push('Invalid Quantity.');
+            errors.push('Missing or invalid Quantity in CSV.');
           }
   
           if (errors.length === 0) {
@@ -107,12 +107,13 @@ const routes = (app) => {
     }
   });
   
-
+  //Route to get all orders
   router.get("/orders", async (req, res) => {
     const orders = await Order.find({});
     res.json(orders);
   });
 
+  //Route to Post an order
   router.post("/orders", async (req, res) => {
     const { date, vendor, modelNumber, unitPrice, quantity } = req.body;
     const order = new Order({ date, vendor, modelNumber, unitPrice, quantity });

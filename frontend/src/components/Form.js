@@ -117,6 +117,8 @@ const Form = () => {
       <button type="submit" className="form-button">
         Submit
       </button>
+
+      <a href="/api/orders" target='_blank' style={{marginTop:10, display:"block", textAlign:"center"}}>Check All Orders Here</a>
     </form>
   );
 };

@@ -55,7 +55,7 @@ const routes = (app) => {
             if (isNaN(unitPrice) || unitPrice <= 0) {
               errors.push('Missing or invalid Unit Price in CSV.');
             }
-            if (!quantity || !quantity.trim() || isNaN(quantity) || parseInt(quantity) <= 0) {
+            if (!quantity || !quantity.trim() || isNaN(quantity) || parseInt(quantity) <= 0 || !Number.isInteger(parseFloat(quantity))) {
               errors.push('Missing or invalid Quantity in CSV.');
             }
     

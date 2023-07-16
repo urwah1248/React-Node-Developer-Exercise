@@ -1,8 +1,3 @@
-/* Form Container */
-body{
-  font-family: sans-serif;
-  background-color:darkslategrey;
-}
 .form-container {
   max-width: 400px;
   margin: 50px auto;
@@ -55,4 +50,15 @@ body{
 /* Form Submit Button Hover Effect */
 .form-button:hover {
   background-color: #40a9ff;
+}
+
+@media(max-width:650px){
+  .form-container{
+      max-width: 90%;
+      margin: 0 auto;
+      width: 90%;
+      border-radius: 0;
+      height: 100%;
+      justify-content: start;
+  }
 }

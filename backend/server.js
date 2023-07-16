@@ -16,7 +16,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static("./build"));
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 //  adding routes
 require("./routes")(app);

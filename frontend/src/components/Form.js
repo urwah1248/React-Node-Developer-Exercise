@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Notification from './Notification';
-import './Form.css'; // Import CSS file for styling
+import './Form.css';
+import { Link } from 'react-router-dom';
 
 const Form = () => {
   const [date, setDate] = useState('');
@@ -19,19 +20,19 @@ const Form = () => {
     formData.append('date', date);
     formData.append('vendor', vendor);
 
+    //Extra measure in case someone changes required field from HTML
     if(!date || !vendor || !file){
       setErrorMessage("Form is incomplete.")
       return;
     }
 
-    // Check vendor name length
+    // Check vendor name length as Validation
     if (vendor.length > 40) {
       setErrorMessage("Vendor name must be 40 characters or less.");
       return;
     }
 
     // Check date range
-    // const currentDate = new Date();
     const selectedDate = new Date(date);
 
     // Calculate the minimum and maximum allowed dates
@@ -40,12 +41,14 @@ const Form = () => {
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 100);
 
+    //Date Validation
     if (selectedDate < minDate || selectedDate > maxDate) {
       setErrorMessage("Date must be within the last 100 years.");
       return;
     }
 
     try {
+      //Requesting Upload
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -96,7 +99,7 @@ const Form = () => {
         className="form-input"
         onChange={(e) => setVendor(e.target.value)}
         value={vendor}
-        maxlength={40}
+        maxLength={40}
         required
       />
       <br />
@@ -118,7 +121,7 @@ const Form = () => {
         Submit
       </button>
 
-      <a href="/api/orders" target='_blank' style={{marginTop:10, display:"block", textAlign:"center"}}>Check All Orders Here</a>
+      <Link to={"/orders"} style={{marginTop:10, display:"block", textAlign:"center"}}>Check All Orders Here</Link>
     </form>
   );
 };

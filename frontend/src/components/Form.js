@@ -57,17 +57,14 @@ const Form = () => {
       const resJson = await response.json()
 
       if (response.ok) {
-        console.log('File uploaded successfully');
         alert('File Uploaded successfully and updated the database.');
         setErrorMessage("")
       } else if (response.status === 400) {
         setErrorMessage(resJson.errors[0]);
       } else {
-        console.error('File upload failed');
         setErrorMessage('CSV file could not be uploaded.');
       }
     } catch (error) {
-      console.error('An error occurred during file upload:', error);
       alert('An error occurred during file upload.');
     }
   };

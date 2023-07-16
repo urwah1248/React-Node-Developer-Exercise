@@ -1,7 +1,7 @@
 {
-  "name": "docker_node_mongo_starter",
+  "name": "node_express_react_exercise",
   "version": "1.0.0",
-  "description": "docker starter with node js and mongodb services",
+  "description": "Node/React exercise",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -9,7 +9,7 @@
     "lint": "prettier --check {**/,}*.js",
     "dev": "nodemon server.js"
   },
-  "author": "Syed Afzal",
+  "author": "Fahad Hussain",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

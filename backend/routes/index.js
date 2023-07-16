@@ -46,7 +46,7 @@ const routes = (app) => {
             // Process each row of the CSV file
             const modelNumber = String(data['Model Number']);
             const unitPrice = parseFloat(data['Unit Price']);
-            const quantity = parseInt(data['Quantity']);
+            const quantity = data['Quantity'];
     
             // Perform validation checks for each field
             if (!modelNumber || !modelNumber.trim()) {
@@ -55,7 +55,7 @@ const routes = (app) => {
             if (isNaN(unitPrice) || unitPrice <= 0) {
               errors.push('Missing or invalid Unit Price in CSV.');
             }
-            if (isNaN(quantity) || quantity <= 0) {
+            if (!quantity || !quantity.trim() || isNaN(quantity) || parseInt(quantity) <= 0) {
               errors.push('Missing or invalid Quantity in CSV.');
             }
     

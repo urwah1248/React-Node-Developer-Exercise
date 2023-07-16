@@ -45,14 +45,14 @@ const routes = (app) => {
     
             // Process each row of the CSV file
             const modelNumber = String(data['Model Number']);
-            const unitPrice = parseFloat(data['Unit Price']);
+            const unitPrice = data['Unit Price'];
             const quantity = data['Quantity'];
     
             // Perform validation checks for each field
-            if (!modelNumber || !modelNumber.trim()) {
+            if (!modelNumber || !modelNumber.trim() || modelNumber.length>50) {
               errors.push('Missing or invalid Model Number in CSV.');
             }
-            if (isNaN(unitPrice) || unitPrice <= 0) {
+            if (!unitPrice || !unitPrice.trim() || isNaN(unitPrice) || unitPrice <= 0) {
               errors.push('Missing or invalid Unit Price in CSV.');
             }
             if (!quantity || !quantity.trim() || isNaN(quantity) || parseInt(quantity) <= 0 || !Number.isInteger(parseFloat(quantity))) {
@@ -65,8 +65,8 @@ const routes = (app) => {
                 date: req.body.date,
                 vendor: req.body.vendor,
                 modelNumber,
-                unitPrice,
-                quantity
+                unitPrice: parseFloat(unitPrice),
+                quantity: parseInt(quantity)
               });
     
               results.push(order);

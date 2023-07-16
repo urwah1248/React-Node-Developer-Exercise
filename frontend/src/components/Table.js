@@ -28,7 +28,7 @@ const Table = () => {
         }
     }
 
-    const Table =()=> (
+    const tableRow =()=> (
             <tbody>
                 {
                     orders.map(order => {
@@ -71,7 +71,7 @@ const Table = () => {
                 </tr>
             </thead>
         {
-            !loading&&Table()
+            !loading&&tableRow()
         }
         </table>
         {loading&&Loading()}

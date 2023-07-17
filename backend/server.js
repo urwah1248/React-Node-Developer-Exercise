@@ -26,9 +26,6 @@ app.get('/orders', (req, res) => {
 
 app.use('/api', router)
 
-//  adding routes
-// require("./routes")(app);
-
 app.on("ready", () => {
   app.listen(port, () => {
     console.log("Server is up on port", port);

@@ -6,31 +6,29 @@ import { Button, Input, Form } from 'antd';
 import { onFinish, onFinishFailed } from './notifications';
 import UploadFile from './UploadFile';
 
-
 const OrderForm = () => {
-  const [date, setDate] = useState('');
-  const [vendor, setVendor] = useState('');
+  const [loading, setLoading] = useState(false);
   const [csv, setCSV] = useState(null)
-  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
     setLoading(true);
+
+    const { date, vendor } = values;
 
     const formData = new FormData();
     formData.append('csv', csv);
     formData.append('date', date);
     formData.append('vendor', vendor);
 
-    //Extra measure in case someone changes required field from HTML
-    if(!date || !vendor || !csv){
-      onFinishFailed("Form is incomplete.")
+    // Extra measure in case someone changes required field from HTML
+    if (!date || !vendor || !csv) {
+      onFinishFailed("Form is incomplete.");
       setLoading(false);
       return;
     }
     // Check vendor name length as Validation
     if (vendor.length > 40) {
-      onFinishFailed("Vendor name must be 40 characters or less.")
+      onFinishFailed("Vendor name must be 40 characters or less.");
       setLoading(false);
       return;
     }
@@ -43,14 +41,15 @@ const OrderForm = () => {
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 100);
 
-    //Date Validation
+    // Date Validation
     if (selectedDate < minDate || selectedDate > maxDate) {
-      setLoading("Date must be within the last 100 years.");
+      onFinishFailed("Date must be within the last 100 years.");
+      setLoading(false);
       return;
     }
 
     try {
-      //Requesting Upload
+      // Requesting Upload
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -62,65 +61,70 @@ const OrderForm = () => {
         setLoading(false);
         onFinish();
       } else if (response.status === 400) {
-        onFinishFailed(resJson.errors[0])
+        onFinishFailed(resJson.errors[0]);
         setLoading(false);
       } else {
-        onFinishFailed('CSV file could not be uploaded.')
+        onFinishFailed('CSV file could not be uploaded.');
         setLoading(false);
       }
     } catch (error) {
-      onFinishFailed('Something went wrong! Try again.')
+      onFinishFailed('Something went wrong! Try again.');
       setLoading(false);
     }
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="form-container">
-      <h1 style={{fontFamily:['Inter', "sans-serif"]}} className="form-title">Bulk Orders Form</h1>
-      <label htmlFor="date" className="form-label">
-        Date
-      </label>
-      <Input
-        type="date"
+    <Form onFinish={handleSubmit} className="form-container">
+      <h1 style={{ fontFamily: ['Inter', 'sans-serif'] }} className="form-title">Bulk Orders Form</h1>
+      <Form.Item
+        labelCol={{ span: 24 }}
+        wrapperCol={{ span: 24 }}
+        label="Date"
         name="date"
-        id="date"
-        className="form-input"
-        onChange={(e) => setDate(e.target.value)}
-        value={date}
-        required
-      />
-      <br />
-
-      <label htmlFor="vendor" className="form-label">
-        Vendor Name
-      </label>
-      <Input
-        placeholder="e.g John Doe"
-        type="text"
-        name="vendor"
-        id="vendor"
-        className="form-input"
-        onChange={(e) => setVendor(e.target.value)}
-        value={vendor}
-        maxLength={40}
-        required
-      />
-      <br />
-
-      <Form.Item style={{marginBottom:10}}>
-        <UploadFile setCSV={setCSV} csv={csv}/>
+        rules={[{ required: true, message: 'Please enter a date' }]}
+      >
+        <Input type="date" />
       </Form.Item>
 
-      <Button htmlType='submit' type="primary" block disabled={loading} onClick={handleSubmit}>
-        {loading?<LoadingIcons.TailSpin height={22} width={22} stroke="black"/>:"Submit"}
+      <Form.Item
+        label="Vendor Name"
+        name="vendor"
+        labelCol={{ span: 24 }}
+        wrapperCol={{ span: 24 }}
+        rules={[
+          { required: true, message: 'Please enter a vendor name' },
+          { max: 40, message: 'Vendor name must be 40 characters or less' },
+        ]}
+      >
+        <Input placeholder="e.g John Doe" maxLength={40} />
+      </Form.Item>
+
+      <Form.Item
+        label="CSV File"
+        name="csv"
+        labelCol={{ span: 24 }}
+        wrapperCol={{ span: 24 }}
+        rules={!csv&&[
+          { required: true, message: 'Please attach a CSV.' }
+        ]}
+      >
+        <UploadFile setCSV={setCSV} csv={csv} />
+      </Form.Item>
+
+      <Button htmlType="submit" type="primary" block disabled={loading}>
+        {loading ? (
+          <LoadingIcons.TailSpin height={22} width={22} stroke="black" />
+        ) : (
+          'Submit'
+        )}
       </Button>
 
-      <Link to={"/orders"} style={{display:"block", textAlign:"center"}}>
-        <Button block style={{marginTop:10, textAlign:"center"}}>
+      <Link to="/orders" style={{ display: 'block', textAlign: 'center' }}>
+        <Button block style={{ marginTop: 10, textAlign: 'center' }}>
           Check All Orders Here
         </Button>
       </Link>
-      </Form>
+    </Form>
   );
 };
 

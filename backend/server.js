@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./db");
+const router = require('./router')
 
 const app = express();
 
@@ -23,8 +24,10 @@ app.get('/orders', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+app.use('/api', router)
+
 //  adding routes
-require("./routes")(app);
+// require("./routes")(app);
 
 app.on("ready", () => {
   app.listen(port, () => {

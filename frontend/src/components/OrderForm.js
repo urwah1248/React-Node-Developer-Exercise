@@ -11,7 +11,6 @@ const OrderForm = () => {
   const [date, setDate] = useState('');
   const [vendor, setVendor] = useState('');
   const [csv, setCSV] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -25,15 +24,13 @@ const OrderForm = () => {
 
     //Extra measure in case someone changes required field from HTML
     if(!date || !vendor || !csv){
-      setErrorMessage("Form is incomplete.")
-      onFinishFailed(errorMessage)
+      onFinishFailed("Form is incomplete.")
       setLoading(false);
       return;
     }
     // Check vendor name length as Validation
     if (vendor.length > 40) {
-      setErrorMessage("Vendor name must be 40 characters or less.");
-      onFinishFailed(errorMessage)
+      onFinishFailed("Vendor name must be 40 characters or less.")
       setLoading(false);
       return;
     }
@@ -48,8 +45,7 @@ const OrderForm = () => {
 
     //Date Validation
     if (selectedDate < minDate || selectedDate > maxDate) {
-      setErrorMessage("Date must be within the last 100 years.");
-      setLoading(false);
+      setLoading("Date must be within the last 100 years.");
       return;
     }
 
@@ -64,27 +60,23 @@ const OrderForm = () => {
 
       if (response.ok) {
         setLoading(false);
-        setErrorMessage("");
         onFinish();
       } else if (response.status === 400) {
-        setErrorMessage(resJson.errors[0]);
-        onFinishFailed(errorMessage)
+        onFinishFailed(resJson.errors[0])
         setLoading(false);
       } else {
-        setErrorMessage('CSV file could not be uploaded.');
-        onFinishFailed(errorMessage)
+        onFinishFailed('CSV file could not be uploaded.')
         setLoading(false);
       }
     } catch (error) {
-      setErrorMessage('Something went wrong! Try again.');
-      onFinishFailed(errorMessage)
+      onFinishFailed('Something went wrong! Try again.')
       setLoading(false);
     }
   };
 
   return (
     <Form onSubmit={handleSubmit} className="form-container">
-      <h1 className="form-title">Bulk Orders Form</h1>
+      <h1 style={{fontFamily:['Inter', "sans-serif"]}} className="form-title">Bulk Orders Form</h1>
       <label htmlFor="date" className="form-label">
         Date
       </label>
@@ -116,7 +108,7 @@ const OrderForm = () => {
       <br />
 
       <Form.Item style={{marginBottom:10}}>
-        <UploadFile setCSV={setCSV}/>
+        <UploadFile setCSV={setCSV} csv={csv}/>
       </Form.Item>
 
       <Button htmlType='submit' type="primary" block disabled={loading} onClick={handleSubmit}>

@@ -4,6 +4,7 @@ import TableBody from './TableBody';
 import './Table.css'
 import { Button } from 'antd';
 import Loading from './Loading';
+import {EnterOutlined} from '@ant-design/icons'
 
 const Table = () => {
     const [orders, setOrders] = useState([])
@@ -19,7 +20,7 @@ const Table = () => {
   return (
     <div>
         <Link to={"/"} style={{display:"block", position:"absolute", top:13}}>
-            <Button style={{marginTop:10, textAlign:"center"}}>
+            <Button icon={<EnterOutlined />} style={{marginTop:10, textAlign:"center"}}>
                 Back to Form
             </Button>
         </Link>

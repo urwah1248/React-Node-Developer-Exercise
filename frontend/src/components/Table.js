@@ -1,50 +1,83 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import TableBody from './TableBody';
+import React from 'react'
 import './Table.css'
-import { Button } from 'antd';
-import Loading from './Loading';
-import {EnterOutlined} from '@ant-design/icons'
+import { Button,Modal, Table as AntTable } from 'antd';
+import { DeleteOutlined, ExclamationCircleFilled} from '@ant-design/icons'
+import { onFinishFailed, onDelete } from './notifications';
+import PropTypes from 'prop-types'
 
-const Table = () => {
-    const [orders, setOrders] = useState([])
-    const [loading, setLoading] = useState(true)
-    useEffect(() => {
-        setLoading(true)
-        fetch('/api/orders')
-        .then(res => res.json())
-        .then(items=> {setOrders(items); setLoading(false)})
-    },[])
+const { confirm } = Modal;
 
-    
+const Table = ({orders, setOrders}) => {
+    //Handling the Delete Request on the the Server and the Client
+    const handleDelete = async (order) => {
+        confirm({
+            title: "Are you sure you want to delete this Order?",
+            icon: <ExclamationCircleFilled />,
+            content: "This Action is not reversible.",
+            onOk() {
+                fetch('/api/orders/'+order.id, {
+                method: 'DELETE',
+                }).then(res => {
+                    setOrders((prevOrders) => prevOrders.filter((o) => o.id !== order.id));
+                    onDelete(order)
+                }).catch(err => {
+                    onFinishFailed(err)
+                })
+            },
+            onCancel() {
+              return;
+            },
+        });
+    }
+
+    //Table Columns for the Component
+    const tableColumns = [
+        {
+            title: 'Date',
+            key: 'date',
+            render: (_, order) => (
+                <>{new Date(order.date).toLocaleDateString()}</>
+            )
+        },
+        {
+            title: 'Vendor',
+            dataIndex: 'vendor',
+            key: 'vendor',
+        },
+        {
+            title: 'Model Number',
+            dataIndex: 'modelNumber',
+            key: 'modelNumber',
+        },
+        {
+            title: 'Unit Price',
+            dataIndex: 'unitPrice',
+            key: 'unitPrice',
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, order) => (
+                <Button onClick={()=>handleDelete(order)} type="primary" danger shape="circle" icon={<DeleteOutlined />} />
+            ),
+        },
+    ]
+
   return (
-    <div>
-        <Link to={"/"} style={{display:"block", position:"absolute", top:13, left:10}}>
-            <Button icon={<EnterOutlined />} style={{marginTop:10, textAlign:"center"}}>
-                
-            </Button>
-        </Link>
-        <h1 style={{textAlign:"center",color:"white"}}>Orders</h1>
-        <div style={{overflowX:"auto"}}>
-            <table className='custom-table'>
-                <thead>
-                    <tr>
-                        <th>Order Date</th>
-                        <th>Vendor</th>
-                        <th>Model Number</th>
-                        <th>Unit Price</th>
-                        <th>Quantity</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                {
-                    !loading && <TableBody orders={orders} setOrders={setOrders}/>
-                }
-            </table>
-        </div>
-        { loading && Loading()}
+    <div className="table">
+        <AntTable dataSource={orders} columns={tableColumns}/>
     </div>
   )
+}
+
+Table.propTypes = {
+    orders: PropTypes.array.isRequired,
+    setOrders: PropTypes.func.isRequired
 }
 
 export default Table

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import './Form.css';
 import { Link } from 'react-router-dom';
 import LoadingIcons from 'react-loading-icons'
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form as AntDForm } from 'antd';
 import { onFinish, onFinishFailed } from './notifications';
 import UploadFile from './UploadFile';
 
-const OrderForm = () => {
+const Form = () => {
   const [loading, setLoading] = useState(false);
   const [csv, setCSV] = useState(null)
 
@@ -74,9 +74,9 @@ const OrderForm = () => {
   };
 
   return (
-    <Form onFinish={handleSubmit} className="form-container">
-      <h1 style={{ fontFamily: ['Inter', 'sans-serif'] }} className="form-title">Bulk Orders Form</h1>
-      <Form.Item
+    <AntDForm onFinish={handleSubmit} className="form-container">
+        <h1 style={{ fontFamily: ['Inter', 'sans-serif']}} className="form-title">Bulk Orders Form</h1>
+      <AntDForm.Item
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
         label="Date"
@@ -84,9 +84,9 @@ const OrderForm = () => {
         rules={[{ required: true, message: 'Please enter a date' }]}
       >
         <Input type="date" />
-      </Form.Item>
+      </AntDForm.Item>
 
-      <Form.Item
+      <AntDForm.Item
         label="Vendor Name"
         name="vendor"
         labelCol={{ span: 24 }}
@@ -97,9 +97,9 @@ const OrderForm = () => {
         ]}
       >
         <Input placeholder="e.g John Doe" maxLength={40} />
-      </Form.Item>
+      </AntDForm.Item>
 
-      <Form.Item
+      <AntDForm.Item
         label="CSV File"
         name="csv"
         labelCol={{ span: 24 }}
@@ -109,7 +109,7 @@ const OrderForm = () => {
         ]}
       >
         <UploadFile setCSV={setCSV} csv={csv} />
-      </Form.Item>
+      </AntDForm.Item>
 
       <Button htmlType="submit" type="primary" block disabled={loading}>
         {loading ? (
@@ -124,8 +124,8 @@ const OrderForm = () => {
           Check All Orders Here
         </Button>
       </Link>
-    </Form>
+    </AntDForm>
   );
 };
 
-export default OrderForm;
+export default Form;

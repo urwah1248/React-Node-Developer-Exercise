@@ -1,8 +1,9 @@
 import React from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types'
 
-const UploadComponent = ({ csv, setCSV }) => {
+const UploadFile = ({ csv, setCSV }) => {
   const handleFileChange = async ({ file }) => {
     // Check file type and size
     const isCSV = file.type === 'text/csv';
@@ -37,4 +38,9 @@ const UploadComponent = ({ csv, setCSV }) => {
   );
 };
 
-export default UploadComponent;
+UploadFile.propTypes = {
+  csv: PropTypes.array.isRequired,
+  setCSV: PropTypes.func.isRequired
+}
+
+export default UploadFile;

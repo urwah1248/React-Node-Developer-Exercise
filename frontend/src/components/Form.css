@@ -75,6 +75,10 @@
   cursor: pointer;
 }
 
+.ant-upload{
+  width: 100%;
+}
+
 @media(max-width:470px){
   .form-container{
       max-width: 90%;

@@ -1,4 +1,5 @@
 require('dotenv').config();
+const port = process.env.PORT
 
 const express = require("express");
 const path = require("path");
@@ -26,8 +27,8 @@ app.get('/orders', (req, res) => {
 require("./routes")(app);
 
 app.on("ready", () => {
-  app.listen(3000, () => {
-    console.log("Server is up on port", 3000);
+  app.listen(port, () => {
+    console.log("Server is up on port", port);
   });
 });
 

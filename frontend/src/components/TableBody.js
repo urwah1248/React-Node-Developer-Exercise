@@ -23,7 +23,6 @@ const TableBody = ({orders, setOrders}) => {
               return;
             },
         });
-        
     }
     return (
     <tbody>
@@ -31,7 +30,6 @@ const TableBody = ({orders, setOrders}) => {
             orders.map(order => {
                 return (
                     <tr key={order.id}>
-                        <td>{order.id}</td>
                         <td>{new Date(order.date).toLocaleDateString()}</td>
                         <td>{order.vendor}</td>
                         <td>{order.modelNumber}</td>

@@ -18,8 +18,8 @@ const Table = () => {
     
   return (
     <div>
-        <Link to={"/"} style={{display:"block", textAlign:"center"}}>
-            <Button block style={{marginTop:10, textAlign:"center"}}>
+        <Link to={"/"} style={{display:"block", position:"absolute", top:13}}>
+            <Button style={{marginTop:10, textAlign:"center"}}>
                 Back to Form
             </Button>
         </Link>
@@ -27,13 +27,12 @@ const Table = () => {
         <table className='custom-table'>
             <thead>
                 <tr>
-                    <th>Order ID</th>
                     <th>Order Date</th>
                     <th>Vendor</th>
                     <th>Model Number</th>
                     <th>Unit Price</th>
                     <th>Quantity</th>
-                    <th></th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             {

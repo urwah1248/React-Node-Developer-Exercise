@@ -1,31 +1,30 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import './Form.css';
 import { Link } from 'react-router-dom';
 import LoadingIcons from 'react-loading-icons'
-import { Button, Input } from 'antd';
+import { Button, Input, Form } from 'antd';
 import { onFinish, onFinishFailed } from './notifications';
+import UploadFile from './UploadFile';
 
-const Form = () => {
+
+const OrderForm = () => {
   const [date, setDate] = useState('');
   const [vendor, setVendor] = useState('');
+  const [csv, setCSV] = useState(null)
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false)
-  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Handle file upload
-    const file = await fileInputRef.current.files[0];
-
     const formData = new FormData();
-    formData.append('csv', file);
+    formData.append('csv', csv);
     formData.append('date', date);
     formData.append('vendor', vendor);
 
     //Extra measure in case someone changes required field from HTML
-    if(!date || !vendor || !file){
+    if(!date || !vendor || !csv){
       setErrorMessage("Form is incomplete.")
       onFinishFailed(errorMessage)
       setLoading(false);
@@ -84,7 +83,7 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <Form onSubmit={handleSubmit} className="form-container">
       <h1 className="form-title">Bulk Orders Form</h1>
       <label htmlFor="date" className="form-label">
         Date
@@ -116,18 +115,9 @@ const Form = () => {
       />
       <br />
 
-      <label htmlFor="quantity" className="form-label">
-        CSV File
-      </label>
-      <input
-        type="file"
-        name="csv"
-        id="csv"
-        ref={fileInputRef}
-        className="form-input"
-        required
-      />
-      <br />
+      <Form.Item style={{marginBottom:10}}>
+        <UploadFile setCSV={setCSV}/>
+      </Form.Item>
 
       <Button htmlType='submit' type="primary" block disabled={loading} onClick={handleSubmit}>
         {loading?<LoadingIcons.TailSpin height={22} width={22} stroke="black"/>:"Submit"}
@@ -138,8 +128,8 @@ const Form = () => {
           Check All Orders Here
         </Button>
       </Link>
-      </form>
+      </Form>
   );
 };
 
-export default Form;
+export default OrderForm;

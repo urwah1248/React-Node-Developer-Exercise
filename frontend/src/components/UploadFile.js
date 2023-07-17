@@ -39,7 +39,7 @@ const UploadFile = ({ csv, setCSV }) => {
 };
 
 UploadFile.propTypes = {
-  csv: PropTypes.array.isRequired,
+  csv: PropTypes.object,
   setCSV: PropTypes.func.isRequired
 }
 

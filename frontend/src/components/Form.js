@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import './Form.css';
 import { Link } from 'react-router-dom';
 import LoadingIcons from 'react-loading-icons'
-import { Button, Input, Form as AntDForm } from 'antd';
+import { Button, Input, DatePicker, Form as AntDForm } from 'antd';
 import { onFinish, onFinishFailed } from './notifications';
 import UploadFile from './UploadFile';
 
 const Form = () => {
   const [loading, setLoading] = useState(false);
   const [csv, setCSV] = useState(null)
+  const [date, setDate] = useState('')
 
   const handleSubmit = async (values) => {
     setLoading(true);
 
-    const { date, vendor } = values;
+    const { vendor } = values;
 
     const formData = new FormData();
     formData.append('csv', csv);
@@ -83,7 +84,7 @@ const Form = () => {
         name="date"
         rules={[{ required: true, message: 'Please enter a date' }]}
       >
-        <Input type="date" />
+        <DatePicker style={{width:"100%"}} onChange={(date) => setDate(date)}/>
       </AntDForm.Item>
 
       <AntDForm.Item

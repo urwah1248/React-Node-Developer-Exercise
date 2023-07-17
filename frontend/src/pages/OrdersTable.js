@@ -10,7 +10,7 @@ const OrdersTable = () => {
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         setLoading(true)
-        fetch('http://localhost:3001/api/orders')
+        fetch('/api/orders')
         .then(res => res.json())
         .then(items=> {setOrders(items); setLoading(false)})
     },[])

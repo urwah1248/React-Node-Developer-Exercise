@@ -19,7 +19,7 @@ export const onFinishFailed = (errorMessage) => {
 export const onDelete = (order) => {
     notification.success({
         message: 'Order Deleted',
-        description: 'Order '+order.id+" has been deleted.",
+        description: 'Order has been deleted successfully.',
         duration: 3, // Duration in seconds
     });
 };

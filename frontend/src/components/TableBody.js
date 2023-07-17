@@ -6,9 +6,9 @@ const { confirm } = Modal;
 const TableBody = ({orders, setOrders}) => {
     const handleDelete = async (order) => {
         confirm({
-            title: "Are you sure you want to delete the Order "+order.id+"?",
+            title: "Are you sure you want to delete this Order?",
             icon: <ExclamationCircleFilled />,
-            content: 'Created by '+order.vendor,
+            content: "This Action is not reversible.",
             onOk() {
                 fetch('/api/orders/'+order.id, {
                 method: 'DELETE',

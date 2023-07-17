@@ -19,27 +19,29 @@ const Table = () => {
     
   return (
     <div>
-        <Link to={"/"} style={{display:"block", position:"absolute", top:13}}>
+        <Link to={"/"} style={{display:"block", position:"absolute", top:13, left:10}}>
             <Button icon={<EnterOutlined />} style={{marginTop:10, textAlign:"center"}}>
-                Back to Form
+                
             </Button>
         </Link>
         <h1 style={{textAlign:"center",color:"white"}}>Orders</h1>
-        <table className='custom-table'>
-            <thead>
-                <tr>
-                    <th>Order Date</th>
-                    <th>Vendor</th>
-                    <th>Model Number</th>
-                    <th>Unit Price</th>
-                    <th>Quantity</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            {
-                !loading && <TableBody orders={orders} setOrders={setOrders}/>
-            }
-        </table>
+        <div style={{overflowX:"auto"}}>
+            <table className='custom-table'>
+                <thead>
+                    <tr>
+                        <th>Order Date</th>
+                        <th>Vendor</th>
+                        <th>Model Number</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                {
+                    !loading && <TableBody orders={orders} setOrders={setOrders}/>
+                }
+            </table>
+        </div>
         { loading && Loading()}
     </div>
   )

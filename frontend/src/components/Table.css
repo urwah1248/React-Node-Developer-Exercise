@@ -1,7 +1,10 @@
 .custom-table {
-    width: 100%;
+    width: 98%;
     border-collapse: collapse;
+    margin: 0 auto;
     margin-top: 20px;
+    border-radius: 4px;
+    overflow: hidden;
   }
   
   .custom-table th,

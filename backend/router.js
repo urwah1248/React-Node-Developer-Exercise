@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
 
 router.get("/orders", getOrders)
-router.delete("/orders/id", deleteOrder)
+router.delete("/orders/:id", deleteOrder)
 router.post("/orders", addOrder)
 router.post('/upload', upload.single('csv'), bulkUploader)
 
